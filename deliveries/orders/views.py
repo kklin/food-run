@@ -26,6 +26,8 @@ def food_run_json(request, food_run_id):
     return JsonResponse(json.dumps(map(lambda x: x.to_dict(), orders)),
             safe=False)
 
+# TODO: this would be better of as an API endpoint that returned the new URL,
+# instead of redirecting
 # TODO: use csrf
 @csrf_exempt
 def new_food_run(request):
