@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>ClickTime Intern Slavery</title>
+    <link rel="stylesheet" type="text/css"
+        href="/static/style.css"></link>
+</head>
+<body>
+    <div id="container">
+        <div id="title">
+            <h1>Hungry? Create a new food run!</h1>
+        </div>
+        <div id="intro">
+        Enter the name of the intern that's going to be picking up
+        the food. <br/>
+        Once you do so, you'll be redirected to a unique
+        page that keeps track of what everyone wants to eat.<br/>
+        You can share that link, and once everyone's order is placed the intern
+        can get directions to the office that goes through somewhere
+        he can pick up all the food! <br/>
+        </div>
+        <form method="POST" action="/new_food_run" id="new-food-run-form">
+            <label for="intern"><strong>Intern:<strong> </label>
+            <input id="intern" type="text" name="intern" /> <br/>
+            <input type="submit" />
+        </form>
+    </div>
+</body>
+</html>

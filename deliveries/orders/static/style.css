@@ -1,0 +1,140 @@
+html { 
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    font-family: "Bangla Sangam MN";
+}
+
+#container {
+    background-color: #C8E1E6;
+    padding: 0px 0px 20px 0px;
+    height: auto;
+}
+
+#title {
+    padding: 10px 0px 10px 20px;
+    background-color: #F2D8E0;
+}
+
+#title h1 {
+    font-size: 35px;
+    color: #8F1B27;
+    margin: 0;
+    font-family: "Bangla Sangam MN";
+}
+
+#title .subtext {
+    color: black;
+    font-size: 14px;
+}
+
+#refresh_button {
+    float: right;
+}
+
+#refresh_button:hover {
+    color: grey;
+    cursor: pointer; cursor: hand;
+}
+
+#directions-container {
+    display: table-cell;
+    padding: 20px 100px 0px 50px;
+}
+
+#intro {
+    padding: 20px 0px 20px 20px;
+}
+
+#directions-container h1 {
+    color: #8F1B27;
+    font-family: "Bangla Sangam MN";
+}
+
+#orders-container {
+    display: table-cell;
+    padding: 20px 100px 0px 20px;
+}
+
+#orders-container #orders-title h1 {
+    display: inline-block;
+    margin: 0;
+    color: #8F1B27;
+    font-family: "Bangla Sangam MN";
+}
+
+#orders-list {
+    list-style-type: none;
+    width: 500px;
+}
+
+#orders-list li {
+    outline: grey dashed;
+    padding: 10px;
+    margin: 0px 0px 30px 0px;
+}
+
+#orders-list .item {
+    font-family: "Bangla Sangam MN";
+    padding: 10px;
+    font-size: 18px;
+}
+
+#orders-list .item .quantity {
+    color: #8F1B27;
+}
+
+#orders-list .item .name {
+}
+
+#orders-list .meta {
+    text-align: right;
+    color: grey;
+    margin: 5px;
+    font-size: 14px;
+}
+
+#request-food-div {
+    display: inline-block;
+    margin: 0px 150px 0px 0px;
+}
+
+#request-food-div label {
+    display: inline-block;
+    float: left;
+    clear: left;
+    width: 100px;
+    text-align: right;
+}
+
+#request-food-div input {
+    display: inline-block;
+    float: left;
+}
+
+#request-food-div h3 {
+    color: #8F1B27;
+}
+
+#route-me-div {
+    display: inline-block;
+}
+
+div.vertical-line {
+    display: table-cell;
+    width: 1px;
+    background-color: black;
+    height: 0;
+    padding: 10px 0px 0px 0px;
+}
+
+.error {
+    font-weight: bold;
+    color: red;
+}
+
+#new-food-run-form {
+    margin: 0px 0px 0px 20px;
+}

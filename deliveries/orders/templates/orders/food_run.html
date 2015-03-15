@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <title>Orders</title>
+        <link rel="stylesheet" type="text/css"
+            href="/static/style.css"></link>
+    </head>
+    <body>
+        <div id="container">
+            <div id="title">
+                <h1>Food Run</h1>
+                <div class="subtext">
+                    By {{intern}} <br/>
+                    Created at {{created}}
+                </div>
+            </div>
+            <div id="intro">
+                If you're here because you're hungry, add your order at the
+                bottom left side. <br/>
+                If you're the poor intern that has to buy all of this, select
+                your preferred mode of transportation on the right, and then
+                click "Route".
+            </div>
+            <div id="orders-container">
+                <div id="orders-title">
+                    <h1>Orders</h1>
+                    <div id="refresh_button">
+                        Refresh orders
+                    </div>
+                </div>
+                <ul id="orders-list">
+                </ul>
+                <div id='request-food-div'>
+                    <h3>Request Food</h3>
+                    <form id="request-food-form" method="POST">
+                        {% csrf_token %}
+                        <label for="orderer">Your Name:  </label>
+                        <input type="text" id="orderer" />
+                        <label for="name">Item Name:  </label>
+                        <input type="text" id="name" /> <br/>
+                        <label for="quantity">Quantity:  </label>
+                        <select id="quantity">
+                            <option selected>1
+                            <option>2
+                            <option>3
+                            <option>4
+                        </select>
+                        <br/>
+                        <input type="hidden" id="food_run_id" value="{{food_run_id}}" />
+                        <input type="submit" />
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="vertical-line"></div>
+            <div id="directions-container">
+                <h1>Directions</h1>
+                <div id="directions-messages">
+                </div>
+                <ol id="directionsList">
+                </ol>
+                <div id='route-me-div'>
+                    Directions type:
+                    <select id="directions_type">
+                        <option selected>Walking
+                        <option>Biking
+                        <option>Transit
+                    </select>
+                    <!--
+                    <div id="route_button">
+                        Route me!
+                    </div>
+                    -->
+                    <br/>
+                    <input id="route_button" type="button" value="Route" />
+                </div>
+            </div>
+
+
+            <div id="map"></div>
+        </div>
+        <script src="/static/jquery-1.11.2.min.js"></script>
+        <!-- <script
+src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+        -->
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+        <script src="/static/route.js"></script>
+    </body>
+</html>
