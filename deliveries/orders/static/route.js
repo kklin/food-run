@@ -122,9 +122,9 @@ function findRestaurant(orders) {
           }
 
           directionsMessages.empty();
-          directionsMessages.append("Starting from " + myLocation + "<br/>");
-          directionsMessages.append("Making a food stop at " + results[0].name + "<br/>");
-          directionsMessages.append("And ending at the Clicktime office");
+          directionsMessages.append("Starting from <strong>" + myLocation + "</strong><br/>");
+          directionsMessages.append("Making a food stop at <strong>" + results[0].name + "</strong><br/>");
+          directionsMessages.append("And ending at the <strong>Clicktime office</strong>");
           calcRoute(myLocation, results[0].geometry.location,
                   function(response) {
                     showSteps(response);
