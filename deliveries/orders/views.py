@@ -11,10 +11,7 @@ def index(request):
 def food_run(request, food_run_id):
     # query db for food_run_items
     foodRun = FoodRun.objects.get(id=int(food_run_id))
-    # orders = foodRun.order_set.all()
-    context = {# 'orders': orders,
-               # 'orders_json' : json.dumps(map(lambda x: x.to_dict(), orders)),
-               'created' : foodRun.created, # TODO: convert to LA timezone
+    context = {'created' : foodRun.created, # TODO: convert to LA timezone
                'intern' : foodRun.poor_intern,
                'food_run_id' : food_run_id}
     return render(request, 'orders/food_run.html', context)

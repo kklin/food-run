@@ -1,4 +1,4 @@
-// AJAX for posting
+// retrieve the orders for a food run, and execute a function on the response
 function get_food(food_run_id, success_callback, failure_callback) {
     $.ajax({
         url     : "food_run/" + food_run_id,
@@ -10,44 +10,8 @@ function get_food(food_run_id, success_callback, failure_callback) {
     });
 }
 
-var directionsService;
-var placesService;
-var directionsList;
-var directionsMessages;
-var ordersList;
-var food_run_id;
-var myLocation;
-var geocoder;
-
-function update_orders_list() {
-    return new Promise(function() {
-        get_food(food_run_id,
-                function(orders) {
-                    ordersList.empty();
-                    for (var i = 0 ; i < orders.length ; i++) {
-                        console.log(orders[i]);
-                        li = "<li><div class=\"item\"><span class=\"quantity\">" + orders[i].quantity + "</span> <span class=\"name\">";
-                        if (orders[i].quantity == 1) {
-                            li += orders[i].name;
-                        } else {
-                            li += orders[i].name + "s";
-                        }
-                        li += "</span></div>";
-                        li += "<div class=\"meta\">";
-                        li += "requested by " + orders[i].orderer;
-                        li += "</div>";
-                        li += "</li>";
-                        ordersList.append(li);
-                    }
-                },
-                function (xhr, errmsg, err) {
-                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-                });
-    });
-}
-
+// make a food request based on the form input
 function request_food() {
-    console.log("create post is working!") // sanity check
     $.ajax({
         url : "request_food", // the endpoint
         type : "POST", // http method
@@ -75,8 +39,47 @@ function request_food() {
     });
 };
 
+var directionsService;
+var placesService;
+var directionsList;
+var directionsMessages;
+var ordersList;
+var food_run_id;
+var myLocation;
+var geocoder;
+
+// updates the display for the orders
+function update_orders_list() {
+    return new Promise(function() {
+        get_food(food_run_id,
+                function(orders) {
+                    // clear the previous entries in the orders list
+                    ordersList.empty();
+                    for (var i = 0 ; i < orders.length ; i++) {
+                        console.log(orders[i]);
+                        // build the list item
+                        li = "<li><div class=\"item\"><span class=\"quantity\">" + orders[i].quantity + "</span> <span class=\"name\">";
+                        if (orders[i].quantity == 1) {
+                            li += orders[i].name;
+                        } else {
+                            li += orders[i].name + "s";
+                        }
+                        li += "</span></div>";
+                        li += "<div class=\"meta\">";
+                        li += "requested by " + orders[i].orderer;
+                        li += "</div>";
+                        li += "</li>";
+                        ordersList.append(li);
+                    }
+                },
+                function (xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                });
+    });
+}
 
 function initialize() {
+  // initialize useful variables
   geocoder = new google.maps.Geocoder();
   // TODO: this is asynchronous so this data isn't always ready
   navigator.geolocation.getCurrentPosition(function(position) {
@@ -90,10 +93,12 @@ function initialize() {
   directionsMessages = $('#directions-messages');
   food_run_id = $('#food_run_id').val();
   ordersList = $('#orders-list');
+  // update the UI
   update_orders_list();
 }
 
-function findRestaurant(orders) {
+// find a suitable restaurant, and call callback on the result
+function findRestaurant(orders, callback) {
   //TODO: use promises
   //update_orders_list().then(function() {
       var query = "";
@@ -109,35 +114,7 @@ function findRestaurant(orders) {
         query: query
       };
       placesService.textSearch(request, function(results, status) {
-        // console.log("Returned from text search with status " + status);
-        directionsList.empty();
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-          if (myLocation === undefined) {
-              directionsMessages.html("<span class=\"error\">Your location has not been attained yet!</span>");
-              return;
-          }
-          for (var i = 0; i < results.length; i++) {
-            var place = results[i];
-            console.log("Result " + i + ": " + place.name + " at " + place.geometry.location);
-          }
-
-          directionsMessages.empty();
-          directionsMessages.append("Starting from <strong>" + myLocation + "</strong><br/>");
-          directionsMessages.append("Making a food stop at <strong>" + results[0].name + "</strong><br/>");
-          directionsMessages.append("And ending at the <strong>Clicktime office</strong>");
-          calcRoute(myLocation, results[0].geometry.location,
-                  function(response) {
-                    showSteps(response);
-                    directionsList.append("<li> Now buy those orders, you slave! </li>");
-                    directionsList.append("<br/>");
-                    calcRoute(results[0].geometry.location, '282 2nd Street 4th floor, San Francisco, CA 94105',
-                        function(response) {
-                            showSteps(response);
-                        });
-                  });
-        } else if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-            directionsMessages.html("<span class=\"error\">Uh oh... no suitable restaurants found</span>");
-        }
+        callback(results, status);
       });
 //  });
 }
@@ -146,18 +123,41 @@ function processRoute() {
     update_orders_list();
     get_food(food_run_id,
             function(orders) {
-                findRestaurant(orders);
-            });
+                findRestaurant(orders, function(results, status) {
+                                        directionsList.empty();
+                                        if (status == google.maps.places.PlacesServiceStatus.OK) {
+                                          if (myLocation === undefined) {
+                                              directionsMessages.html("<span class=\"error\">Your location has not been attained yet!</span>");
+                                              return;
+                                          }
+                                          for (var i = 0; i < results.length; i++) {
+                                            var place = results[i];
+                                            console.log("Result " + i + ": " + place.name + " at " + place.geometry.location);
+                                          }
+
+                                          directionsMessages.empty();
+                                          directionsMessages.append("Starting from <strong>" + myLocation + "</strong><br/>");
+                                          directionsMessages.append("Making a food stop at <strong>" + results[0].name + "</strong><br/>");
+                                          directionsMessages.append("And ending at the <strong>Clicktime office</strong>");
+                                          calcRoute(myLocation, results[0].geometry.location,
+                                                  function(response) {
+                                                    showSteps(response);
+                                                    directionsList.append("<li> Now buy those orders, you slave! </li>");
+                                                    directionsList.append("<br/>");
+                                                    calcRoute(results[0].geometry.location, '282 2nd Street 4th floor, San Francisco, CA 94105',
+                                                        function(response) {
+                                                            showSteps(response);
+                                                        });
+                                                  });
+                                        } else if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+                                            directionsMessages.html("<span class=\"error\">Uh oh... no suitable restaurants found</span>");
+                                        }
+                                    });
+                });
 }
 
 function calcRoute(start, end, success) {
-
-  // Retrieve the start and end locations and create
-  // a DirectionsRequest using WALKING directions.
-  // var start = document.getElementById('start').value;
-  // var start = '2530 Hillegass Ave, Berkeley, CA';
-  // var end = '282 2nd Street 4th floor, San Francisco, CA 94105';
-  //var end = document.getElementById('end').value;
+  // figure out the requested travel mode
   var myTravelMode = null;
   var directions_type = $('#directions_type').val();
   if (directions_type === 'Walking') {
@@ -167,6 +167,8 @@ function calcRoute(start, end, success) {
   } else if (directions_type === 'Transit') {
       myTravelMode = google.maps.TravelMode.TRANSIT;
   }
+
+  // construct request
   var request = {
       origin: start,
       destination: end,
@@ -188,7 +190,7 @@ function showSteps(directionResult) {
 
   for (var i = 0; i < myRoute.steps.length; i++) {
     console.log(myRoute.steps[i].start_location + ": " + myRoute.steps[i].instructions);
-    // directionsList.append("<li>" + myRoute.steps[i].start_location + ": " + myRoute.steps[i].instructions + "</li>");
+    // TODO: these list items could contain more information
     directionsList.append("<li>" + myRoute.steps[i].instructions + "</li>");
   }
 }
@@ -196,8 +198,6 @@ function showSteps(directionResult) {
 var main = function() {
     initialize();
     $('#route_button').click(function() {
-        // console.log(orders);
-        // calcRoute();
         processRoute();
     });
 
@@ -214,4 +214,3 @@ var main = function() {
 }
 
 $(document).ready(main)
-
